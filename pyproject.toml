@@ -1,0 +1,9 @@
+[project]
+name = "kite-arcade"
+version = "0.1.0"
+description = "A kite fighting arcade game"
+readme = "README.md"
+requires-python = ">=3.7"
+dependencies = [
+    "pygame>=2.6.1",
+]
