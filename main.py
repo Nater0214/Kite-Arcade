@@ -1,5 +1,8 @@
+from src import game
+
+
 def main() -> None:
-    print("Hello from kite-arcade!")
+    game.run()
 
 
 if __name__ == "__main__":
