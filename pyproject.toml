@@ -5,5 +5,13 @@ description = "A kite fighting arcade game"
 readme = "README.md"
 requires-python = ">=3.7"
 dependencies = [
+    "numpy>=1.21.6",
     "pygame>=2.6.1",
 ]
+
+[dependency-groups]
+dev = ["mypy>=1.4.1", "ruff>=0.11.7"]
+
+[tool.mypy]
+files = ["main.py", "src/"]
+plugins = "numpy.typing.mypy_plugin"
