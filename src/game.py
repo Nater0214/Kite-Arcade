@@ -13,8 +13,12 @@ def run() -> None:
 
     # Initialize the game
     pg.init()
-    pg.display.set_mode((600, 400))
+    game_display = pg.display.set_mode((600, 400))
     pg.display.set_caption("Kite Arcade")
+
+    # Load the background image
+    background_image = pg.image.load("assets/background.png")
+    background_image = pg.transform.scale(background_image, (600, 400))
 
     # Add the input methods
     p1_input_method = KeyboardInputMethod(keyboard.WASD_MAPPING)
@@ -82,8 +86,9 @@ def run() -> None:
                         navigation_grid.click()
 
         # Update the display
+        game_display.blit(background_image, (0, 0))
         all_buttons.draw(pg.display.get_surface())
-        pg.display.flip()
+        pg.display.update()
 
     # Quit the game
     pg.quit()
