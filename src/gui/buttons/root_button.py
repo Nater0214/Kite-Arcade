@@ -1,16 +1,18 @@
 from typing import Any, Callable, Optional
 
-import pygame
+import pygame as pg
+
+from src.gui.element import Element
 
 
-class Button(pygame.sprite.Sprite):
+class Button(Element, pg.sprite.Sprite):
     """A button that can be pressed"""
 
     _on_click: Callable[[], Optional[Any]]
-    image: pygame.Surface
-    rect: pygame.Rect
-    _base_image: pygame.Surface
-    _hover_image: pygame.Surface
+    image: pg.Surface
+    rect: pg.Rect
+    _base_image: pg.Surface
+    _hover_image: pg.Surface
     _is_hovering: bool = False
 
     def __init__(
@@ -21,29 +23,30 @@ class Button(pygame.sprite.Sprite):
         on_click: Callable[[], Optional[Any]] = lambda: None,
         font_name: Optional[str] = None,
         font_size: int = 24,
-        color: pygame.Color = pygame.Color((16, 16, 16)),
-        hover_color: pygame.Color = pygame.Color((64, 64, 64)),
-        font_color: pygame.Color = pygame.Color((192, 192, 192)),
+        color: pg.Color = pg.Color((16, 16, 16)),
+        hover_color: pg.Color = pg.Color((64, 64, 64)),
+        font_color: pg.Color = pg.Color((192, 192, 192)),
     ) -> None:
         # Call super init
-        super().__init__()
+        super(Element, self).__init__()
+        super(pg.sprite.Sprite, self).__init__()
 
         # Set instance variables
         self._on_click = on_click
 
         # Font and text stuff
         try:
-            font = pygame.font.Font(font_name, font_size)
+            font = pg.font.Font(font_name, font_size)
         except FileNotFoundError:
-            font = pygame.font.SysFont(font_name, font_size)
+            font = pg.font.SysFont(font_name, font_size)
 
         text_surface = font.render(text, True, font_color)
 
         # Create button surfaces
-        self._base_image = pygame.Surface(dimensions)
+        self._base_image = pg.Surface(dimensions)
         self._base_image.fill(color)
 
-        self._hover_image = pygame.Surface(dimensions)
+        self._hover_image = pg.Surface(dimensions)
         self._hover_image.fill(hover_color)
 
         # Set initial surface and rect
@@ -56,17 +59,16 @@ class Button(pygame.sprite.Sprite):
         self._base_image.blit(text_surface, text_rect)
         self._hover_image.blit(text_surface, text_rect)
 
-
     def update(self, *args, **kwargs) -> None:
-        mouse_pos = pygame.mouse.get_pos()
-        is_currently_hovering = self.rect.collidepoint(mouse_pos)
-        if is_currently_hovering != self._is_hovering:
-            self._is_hovering = is_currently_hovering
-            self.image = (
-                self._hover_image if is_currently_hovering else self._base_image
-            )
+        self.image = self._base_image if not self._is_hovering else self._hover_image
 
-    def handle_event(self, event: pygame.event.Event) -> None:
-        if event.type == pygame.MOUSEBUTTONDOWN:
+    def update_hovering(self, hovering: bool) -> None:
+        self._is_hovering = hovering
+
+    def handle_event(self, event: pg.event.Event) -> None:
+        if event.type == pg.MOUSEBUTTONDOWN:
             if event.button == 1 and self.rect.collidepoint(event.pos):
                 self._on_click()
+
+    def click(self) -> None:
+        self._on_click()
